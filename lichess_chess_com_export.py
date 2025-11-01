@@ -15,21 +15,19 @@ YEAR = int(os.environ.get("YEAR_TO_USE"))
 MONTH = int(os.environ.get("MONTH_TO_USE"))
 TIME_CONTROL_MAP = {
     "Blitz": ["180+2", "180", "300"],
-    "Rapid": ["600+0", "900"],
+    "Rapid": ["600", "600+0", "900"],
     "Classical": ["1800"],
 }
 
 
-def figure_out_date_params():
-    # current_month = datetime.now().month
-    current_month = 8
-    last_day_number_for_month = calendar.monthrange(YEAR, current_month)[1]
+def figure_out_date_params(month_number: int):
+    last_day_number_for_month = calendar.monthrange(YEAR, month_number)[1]
     first_day_of_month = datetime(
-        year=YEAR, month=current_month, day=1, tzinfo=timezone.utc
+        year=YEAR, month=month_number, day=1, tzinfo=timezone.utc
     )
     last_day_of_month = datetime(
         year=YEAR,
-        month=current_month,
+        month=month_number,
         day=last_day_number_for_month,
         hour=23,
         minute=59,
@@ -47,7 +45,7 @@ def figure_out_date_params():
 
 def export_lichess_games():
     print(f"Exporting lichess games for {YEAR} {MONTH}")
-    from_date, to_date = figure_out_date_params()
+    from_date, to_date = figure_out_date_params(MONTH)
 
     url = f"https://lichess.org/api/games/user/{USERNAME}"
     headers = {
@@ -63,11 +61,10 @@ def export_lichess_games():
     response = requests.get(url, headers=headers, params=params)
     pgns = response.text
     if response.status_code == 200:
-        with open(
-            f"{DOWNLOADS_PATH}/{YEAR}_{MONTH}_lichess_games.pgn", "w", encoding="utf-8"
-        ) as file:
+        export_path = f"{DOWNLOADS_PATH}/{YEAR}_{MONTH}_lichess_games.pgn"
+        with open(export_path, "w", encoding="utf-8") as file:
             file.write(add_custom_tag_to_games(pgns))
-            print("Games exported successfully.")
+            print(f"Games exported successfully to {export_path}")
     else:
         print(f"Failed to export games: {response.status_code}")
 
@@ -76,15 +73,14 @@ def export_chess_com_games():
     print(f"Export chess.com games for {YEAR} {MONTH}")
     client = ChessDotComClient(user_agent="Export app")
     response = client.get_player_games_by_month_pgn(
-        username=USERNAME, year=YEAR, month=9
+        username=USERNAME, year=YEAR, month=MONTH
     )
     print(response)
     final_data = add_custom_tag_to_games(response.pgn.data)
-    with open(
-        f"{DOWNLOADS_PATH}/{YEAR}_{MONTH}_chess_com_games.pgn", "w", encoding="utf-8"
-    ) as file:
+    export_path = f"{DOWNLOADS_PATH}/{YEAR}_{MONTH}_chess_com_games.pgn"
+    with open(export_path, "w", encoding="utf-8") as file:
         file.write(final_data)
-    print("Games exported successfully.")
+    print(f"Games exported successfully to {export_path}")
 
 
 def add_custom_tag_to_games(pgns: str):

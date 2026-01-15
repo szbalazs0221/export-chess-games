@@ -60,5 +60,5 @@ const sanitizedChapterName = chapterTitle
   .toLowerCase()
   .replaceAll(' ', '-')
   .replaceAll('.', '');
-const fileName = `${sanitizedCourseName}-${sanitizedChapterName}`;
+const fileName = `${sanitizedCourseName}-${sanitizedChapterName}.pgn`;
 download(fileName, pgnContent.join('\n'));

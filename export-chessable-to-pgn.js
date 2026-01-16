@@ -50,7 +50,7 @@ VARIATION_CARDS_SELECTOR.forEach((variation) => {
 const pgnContent = [];
 variations.forEach((variation) => {
   const headerInfo = `[White "${variation.white}"]\n[Black "${variation.black}"]\n`;
-  const additionalTags = `[Priority ${variation.priority}]\n[Alternative ${variation.alternative}]\n[Informational ${variation.informational}]\n\n`;
+  const additionalTags = `[Priority "${variation.priority}"]\n[Alternative "${variation.alternative}"]\n[Informational "${variation.informational}"]\n\n`;
   pgnContent.push(`${headerInfo}${additionalTags}${variation.moves}\n`);
 });
 const sanitizedCourseName = COURSE_NAME.toLowerCase()

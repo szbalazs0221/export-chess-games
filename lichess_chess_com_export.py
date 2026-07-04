@@ -14,6 +14,7 @@ HUMAN_READABLE_FORMAT = "%Y %m %d"
 YEAR = int(os.environ.get("YEAR_TO_USE"))
 MONTH = int(os.environ.get("MONTH_TO_USE"))
 TIME_CONTROL_MAP = {
+    "Bullet": ["60+0"],
     "Blitz": ["180+2", "180", "180+0", "300", "300+0"],
     "Rapid": ["600", "600+0", "900", "900+0"],
     "Classical": ["1800", "1800+0"],
